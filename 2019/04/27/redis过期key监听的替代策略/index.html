@@ -6,20 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://troublrman.github.io">
-  <title>说说java面试的几家公司的问题 | troubleMan的独立博客</title>
+  <title>redis过期key监听的替代策略 | troubleMan的独立博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="作为一个15年毕业游走在社会边缘，之前面试的几家公司。不说好坏，北上的这几家公司的面试确实有点小感慨。">
-<meta name="keywords" content="面试">
+  <meta name="description" content="之前项目中利用redis过期key的超时监听来完成相关的业务实现。redis key的超时是能满足业务但是要开启redis超时（超时的监听，并不需要自己发布，只有修改配置文件redis.conf中的：notify-keyspace-events Ex，默认为notify-keyspace-events “”）会给redis带来大的cpu消耗，那么有什么好的其他的替代策略了？">
+<meta name="keywords" content="redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="说说java面试的几家公司的问题">
-<meta property="og:url" content="https://troublrman.github.io/2017/09/03/interview/index.html">
+<meta property="og:title" content="redis过期key监听的替代策略">
+<meta property="og:url" content="https://troublrman.github.io/2019/04/27/redis过期key监听的替代策略/index.html">
 <meta property="og:site_name" content="troubleMan的独立博客">
-<meta property="og:description" content="作为一个15年毕业游走在社会边缘，之前面试的几家公司。不说好坏，北上的这几家公司的面试确实有点小感慨。">
+<meta property="og:description" content="之前项目中利用redis过期key的超时监听来完成相关的业务实现。redis key的超时是能满足业务但是要开启redis超时（超时的监听，并不需要自己发布，只有修改配置文件redis.conf中的：notify-keyspace-events Ex，默认为notify-keyspace-events “”）会给redis带来大的cpu消耗，那么有什么好的其他的替代策略了？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-19T09:58:33.793Z">
+<meta property="og:image" content="http://prv446rzb.bkt.clouddn.com/WechatIMG226.png">
+<meta property="og:image" content="http://prv446rzb.bkt.clouddn.com/WechatIMG1.png">
+<meta property="og:image" content="http://prv446rzb.bkt.clouddn.com/WechatIMG2.png">
+<meta property="og:updated_time" content="2019-05-28T03:56:30.754Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="说说java面试的几家公司的问题">
-<meta name="twitter:description" content="作为一个15年毕业游走在社会边缘，之前面试的几家公司。不说好坏，北上的这几家公司的面试确实有点小感慨。">
+<meta name="twitter:title" content="redis过期key监听的替代策略">
+<meta name="twitter:description" content="之前项目中利用redis过期key的超时监听来完成相关的业务实现。redis key的超时是能满足业务但是要开启redis超时（超时的监听，并不需要自己发布，只有修改配置文件redis.conf中的：notify-keyspace-events Ex，默认为notify-keyspace-events “”）会给redis带来大的cpu消耗，那么有什么好的其他的替代策略了？">
+<meta name="twitter:image" content="http://prv446rzb.bkt.clouddn.com/WechatIMG226.png">
   
     <link rel="alternative" href="/atom.xml" title="troubleMan的独立博客" type="application/atom+xml">
   
@@ -165,14 +169,14 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-interview" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-redis过期key监听的替代策略" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      说说java面试的几家公司的问题
+      redis过期key监听的替代策略
     </h1>
   
 
@@ -187,110 +191,58 @@ var _hmt = _hmt || [];
   	</a>
 	
         
-        <a href="/2017/09/03/interview/" class="archive-article-date">
-  	<time datetime="2017-09-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-03</time>
+        <a href="/2019/04/27/redis过期key监听的替代策略/" class="archive-article-date">
+  	<time datetime="2019-04-27T08:13:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p> 作为一个15年毕业游走在社会边缘，之前面试的几家公司。不说好坏，北上的这几家公司的面试确实有点小感慨。<br><a id="more"></a></p>
-<blockquote>
-<p><strong>A公司</strong></p>
+        <blockquote>
+<p>之前项目中利用redis过期key的超时监听来完成相关的业务实现。redis key的超时是能满足业务但是要开启redis超时（超时的监听，并不需要自己发布，只有修改配置文件redis.conf中的：notify-keyspace-events Ex，默认为notify-keyspace-events “”）会给redis带来大的cpu消耗，那么有什么好的其他的替代策略了？</p>
 </blockquote>
-<ul>
-<li>写出java中synchronized的使用方式。</li>
-<li>Java中设置最大堆和最小堆内存的参数是什么？</li>
-<li>volatile的作用？</li>
-</ul>
-<blockquote>
-<blockquote>
-<p><strong>一道设计题</strong></p>
-<ul>
-<li>多个线程同时读写，读线程的数量远远⼤于写线程，你认为应该如何解决 并发的问题？你会选择加什么样的锁？</li>
-<li>JAVA的AQS是否了解，它是⼲嘛的？</li>
-<li>除了synchronized关键字之外，你是怎么来保障线程安全的？</li>
-<li>什么时候需要加volatile关键字？它能保证线程安全吗？</li>
-</ul>
+<a id="more"></a>
+<h2 id="redis-key超时方案替代策略"><a href="#redis-key超时方案替代策略" class="headerlink" title="redis key超时方案替代策略"></a>redis key超时方案替代策略</h2><p>1.Quartz 任务调度框架，更适合周期性的执行任务，对于订单超时未支付，只能采用5分钟一轮询数据库的形式实现</p>
+<p>2.Timer java原生定时工具，可少量使用，当数据量大时，性能不好控制</p>
+<p>3.Quartz + Timer 周期轮询（5分钟）数据库，查询出5分钟之内将要超时的订单，然后多线程创建timer完成订单的定时，这种实现方式比较复杂，但是可以在性能和功能方面，是可以实现的</p>
+<p>4.netty HashedWheelTimer(注意线程使用情况)</p>
+<h2 id="netty-HashedWheelTimer原理"><a href="#netty-HashedWheelTimer原理" class="headerlink" title="netty HashedWheelTimer原理"></a>netty HashedWheelTimer原理</h2><blockquote>
+<p>netty毕竟是一个大名鼎鼎的框架，广泛使用于业界。它有许多心跳检测等定时任务，使用延时队列来实现。HashedWheelTimer底层数据结构依然是使用DelayedQueue。加上一种叫做时间轮的算法来实现。</p>
 </blockquote>
+<p>关于时间轮算法，有点类似于HashMap。在new 一个HashedWheelTimer实例的时候，可以传入几个参数。</p>
+<p>第一，一个时间长度，这个时间长度跟具体任务何时执行没有关系，但是跟执行精度有关。这个时间可以看作手表的指针循环一圈的长度。</p>
+<p>第二，刻度数。这个可以看作手表的刻度。比如第一个参数为24小时，刻度数为12，那么每一个刻度表示2小时。时间精度只能到两小时。时间长度/刻度数值越大，精度越大。然后添加一个任务的时候，根据hash算法得到hash值并对刻度数求模得到一个下标，这个下标就是刻度的位置。然而有一些任务的执行周期超过了第一个参数，比如超过了24小时，就会得到一个圈数round。</p>
+<p>简点说，添加一个任务时会根据任务得到一个hash值，并根据时间轮长度和刻度得到一个商值round和模index，比如时间长度24小时，刻度为12，延迟时间为32小时，那么round=1,index=8。时间轮从开启之时起每24/12个时间走一个指针，即index+1,第一圈round=0。当走到第7个指针时，此时index=7，此时刚才的任务并不能执行，因为刚才的任务round=1,必须要等到下一轮index=7的时候才能执行。对于Delayed两个重要实现方法，第一排序，其实是通过hash求商和模决定放入哪个位置。这些位置本身就已经按照时间顺序排序了。第二，延迟时间，已经被封装好了，传入一个延迟的时间就好了。</p>
+<p><img src="http://prv446rzb.bkt.clouddn.com/WechatIMG226.png" alt="实例图"></p>
+<h2 id="代码实例"><a href="#代码实例" class="headerlink" title="代码实例"></a>代码实例</h2><blockquote>
+<p>HashedWheelTimer构造器</p>
 </blockquote>
-<hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashedWheelTimer</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">           ThreadFactory threadFactory,    // 用来创建后台线程</span></span></span><br><span class="line"><span class="function"><span class="params">           <span class="keyword">long</span> tickDuration,              // 每格时间间隔 默认 <span class="number">100</span></span></span></span><br><span class="line"><span class="function"><span class="params">              TimeUnit unit,                  // 时间单位 默认 毫秒</span></span></span><br><span class="line"><span class="function"><span class="params">              <span class="keyword">int</span> ticksPerWheel,              // 轮子size（一圈多少格） 默认 <span class="number">512</span> 如果不是<span class="number">2</span>的N次方，则去大于该参数的第一个<span class="number">2</span>的N次方</span></span></span><br><span class="line"><span class="function"><span class="params">                                              // 理由 便于Hash值的计算</span></span></span><br><span class="line"><span class="function"><span class="params">              <span class="keyword">boolean</span> leakDetection,          // 泄露检测 默认 <span class="keyword">true</span></span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">long</span> maxPendingTimeouts)</span> </span>&#123;      <span class="comment">// 最大待定超时时间 默认 不设置</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>B公司</strong></p>
+<p>创建一个任务</p>
 </blockquote>
-<ol>
-<li>“请你自我介绍一下”</li>
-<li>“你有什么业余爱好？”</li>
-<li>“你认为你工作中的哪些方面是最重要的？”</li>
-<li>“谈谈你的缺点”</li>
-<li>“谈一谈你的一次失败经历”</li>
-<li>“你为什么选择我们公司？</li>
-<li>“对这项工作，你有哪些可预见的困难？”</li>
-<li>“我们为什么要录用你？”</li>
-<li>“您在前一家公司的离职原因是什么？”</li>
-</ol>
-<hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TimerTask task = <span class="keyword">new</span> TimerTask() &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(Timeout timeout)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"任务执行"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>C公司</strong></p>
+<p>将任务加入延迟队列</p>
 </blockquote>
-<ol>
-<li>mybatis怎么防止SQL注入</li>
-<li>Hibernate的缓存机制</li>
-<li>Hibernate一级缓存</li>
-<li>Hibernate二级缓存</li>
-<li>什么样的数据适合存放到第二级缓存中</li>
-<li>Mybatis和Hibernate的区别(优缺点)</li>
-<li>redis的使用场景</li>
-<li>Tomcat本身的参数你⼀般会怎么调整？</li>
-<li>如果有很多数据插⼊MYSQL 你会选择什么方式?</li>
-</ol>
-<hr>
-<blockquote>
-<p><strong>D公司</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timer.newTimeout(task, <span class="number">1000</span>, TimeUnit.SECONDS);</span><br></pre></td></tr></table></figure>
+<p>使用是不是很简单。</p>
+<h2 id="HashedWheelTimer弊端"><a href="#HashedWheelTimer弊端" class="headerlink" title="HashedWheelTimer弊端"></a>HashedWheelTimer弊端</h2><h3 id="1-持久化"><a href="#1-持久化" class="headerlink" title="1. 持久化"></a>1. 持久化</h3><blockquote>
+<p>HashedWheelTimer不能持久化数据，可以用数据库或者redis等缓存解决</p>
 </blockquote>
-<ol>
-<li>你知道哪些或者你们线上使用什么GC策略? 它有什么优势，适用于什么 场景？</li>
-<li>JAVA类加载器包括几种？它们之间的关系是怎么样的？双亲委派机 制是什么意思？ 有什么好处？</li>
-<li>如何定义个类加载器？你使用过哪些或者你在什么场景下需要定义的类加载器？</li>
-<li>Perm Space中保存什么数据? 会引起OutOfMemory吗？ 5.做gc时，对象在内存各 个Space中被移动的顺序是什么？</li>
-<li>你有没有遇到过OutOfMemory问题？你是怎么来处理这个问题的？处理 过程中有 哪些收获？</li>
-<li>1.8之后Perm Space有哪些变动? MetaSpace默认是⽆限的么? 还是 你们会通过什 么⽅式来指定?</li>
-<li>Jstack是⼲什么的? Jstat呢? 如果线上程序周期性地出现卡顿，你怀疑可 能是gc<br>导致的，你会怎么来排查这个问题？线程日志一般你会看其中的什么 部分？</li>
-<li>StackOverFlow异常有没有遇到过？一般你猜测会在什么情况下被触 发？ 如何指定一个线程的堆栈？一般你们写多少？</li>
-</ol>
-<hr>
-<blockquote>
-<p><strong>E公司</strong></p>
+<h3 id="2-分布式"><a href="#2-分布式" class="headerlink" title="2.分布式"></a>2.分布式</h3><blockquote>
+<p>利用RMQ，kafka可以实现解决实现分布式</p>
 </blockquote>
-<ol>
-<li>简述synchronized?Object；Monitor机制；</li>
-<li>简述happen-before规则 ；</li>
-<li>JUC和Object ； Monitor机制区别是什么 ； 简述AQS原理 ；</li>
-<li>简述DCL失效原因，解决方法 ；</li>
-<li>简述nio原理 ；</li>
-<li>jvm运行时数据区域有哪几部分组成，各自作用 ；</li>
-<li>gc算法有哪些 ； gc收集器有哪些 ；</li>
-<li>简述class加载各阶段过程 ； class ； loader有哪些模型 ；</li>
-<li>简述常用的JDK命令行工具 ；</li>
-<li>简述字节码文件组成 ；</li>
-<li>讲讲你平常是如何针对具体的SQL做优化 ；</li>
-<li>mysql的存储引擎有哪些，区别 ；</li>
-<li>gc:内存模型；</li>
-<li>gc: 垃圾回收 ；</li>
-<li>多线程：如何实现一个定时调度和循环调度的工具类。但提交任务处理不过来的  时候，拒绝机制应该如何处理 ；</li>
-<li>线程池默认有哪几种拒绝机制 ；</li>
-<li>多线程： 如何实现一个ThreadLocal ；</li>
-<li>说说你了解的一个线程安全队列 ；</li>
-<li>Atomic包的实现原理是什么 ；</li>
-<li>CAS又是怎么保证原子性的 ；</li>
-<li>string分析1000次循环subString用了多少内存 ；</li>
-</ol>
-<hr>
-<blockquote>
-<p><strong>收获</strong></p>
+<h2 id="我的实现"><a href="#我的实现" class="headerlink" title="我的实现"></a>我的实现</h2><blockquote>
+<p>接受kafka发送出来的消息,把要处理的消息</p>
 </blockquote>
-<p>  说真的面试不需要所有的你都会，我们每个人所处的环境不一样，学习的体系不一样。但是就以上公司提出的问题一个最简单的结论：除了懂得面试礼仪具备一定语言表达能力外，技术还要过硬，不然以上的面试你不想过关。那从哪里学习才能获取过硬的技术以及过硬的胆识呢？以下便是我推荐的学习重点内容，希望对大家有所帮助。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消息解耦</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> record 记录信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@KafkaListener</span>(topics = &#123;TOPIC_XXQ_REWARD&#125;, namespace = <span class="string">"middleware.kafka"</span>, groupId = <span class="string">"xxq-trade-service"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendRewardMessageCount</span><span class="params">(ConsumerRecord&lt;String, String&gt; record)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (record.key()) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">"LIVE"</span>:</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                RewardExpLiveRequest response = objectMapper.readValue(record.value(), RewardExpLiveRequest.class);</span><br><span class="line">                StringBuilder valuieKey = <span class="keyword">new</span> StringBuilder().append(<span class="string">"LIVE_"</span>).append(response.getLiveId()).append(response.getFromId()).append(response.getGiftId());</span><br><span class="line">                timer.newTimeout(<span class="keyword">new</span> TimerTask() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(Timeout timeout)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        realizeService.rewardGiftLive(valuieKey.toString());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, <span class="number">5</span>, TimeUnit.SECONDS);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                log.error(<span class="string">"error in KafkaListen.sendRewardMessageCount&#123;&#125;"</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先判断过期的key是否存在，存在的话不做任何处理</span></span><br><span class="line"><span class="keyword">if</span>(redisTemplate.hasKey(expireKey))&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//类似分布式锁的实现，判断是否存在已经发送消息的情况</span></span><br><span class="line"><span class="keyword">if</span> (redisTemplate.opsForHash().hasKey(RedisKey.LIVE_MESSAGE_COUNT, expireKey)) &#123;</span><br><span class="line">    System.out.println(<span class="string">"你现在可以发送消息&#123;&#125;"</span>+expireKey);</span><br><span class="line">    <span class="comment">//发送云信消息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="之前使用的方案"><a href="#之前使用的方案" class="headerlink" title="之前使用的方案"></a>之前使用的方案</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">graph TD</span><br><span class="line">A[存入过期key和key的信息] --&gt;B(redis持久化业务要处理信息)</span><br><span class="line">    B --&gt; C[业务监听订阅过期key]</span><br><span class="line">    C --&gt; D(key 过期通知到到业务方)</span><br><span class="line">    D --&gt; E2[处理并删除redis业务信息]</span><br><span class="line">redis失效key方案</span><br></pre></td></tr></table></figure>
+<p><img src="http://prv446rzb.bkt.clouddn.com/WechatIMG1.png" alt="失效的key方案"></p>
+<h3 id="后面的方案"><a href="#后面的方案" class="headerlink" title="后面的方案"></a>后面的方案</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">A[存入过期key和key的信息] --&gt;B(redis持久化业务要处理信息)</span><br><span class="line">    B --&gt; C[kafka发送消HashedWheelTimer写入key]</span><br><span class="line">    C --&gt; D&#123;HashedWheelTimer触发查看是否存在过期key&#125;</span><br><span class="line">    D --&gt; E1[key不存在处理业务删除过期key相关的业务信息]</span><br><span class="line">    D --&gt; E2[key存在不处理HashedWheelTimer task任务]</span><br><span class="line">    替代策略</span><br></pre></td></tr></table></figure>
+<p><img src="http://prv446rzb.bkt.clouddn.com/WechatIMG2.png" alt="替代失效的key方案"></p>
 
       
 
@@ -335,24 +287,13 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
 
@@ -402,7 +343,7 @@ var _hmt = _hmt || [];
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://troublrman.github.io/2017/09/03/interview/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://troublrman.github.io/2019/04/27/redis过期key监听的替代策略/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -416,15 +357,20 @@ var _hmt = _hmt || [];
   
 <nav id="article-nav">
   
-    <a href="/2019/01/28/java技术栈-面试必问/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/05/21/redis scan命令引起的连接泄露/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          java技术栈-面试必问
+          redis scan命令引起的连接泄露
         
       </div>
     </a>
   
+  
+    <a href="/2019/01/28/java技术栈-面试必问/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">java技术栈-面试必问</div>
+      <i class="icon-circle-right"></i>
+    </a>
   
 </nav>
 
@@ -449,7 +395,7 @@ var _hmt = _hmt || [];
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis-key超时方案替代策略"><span class="toc-number">1.</span> <span class="toc-text">redis key超时方案替代策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#netty-HashedWheelTimer原理"><span class="toc-number">2.</span> <span class="toc-text">netty HashedWheelTimer原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实例"><span class="toc-number">3.</span> <span class="toc-text">代码实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashedWheelTimer弊端"><span class="toc-number">4.</span> <span class="toc-text">HashedWheelTimer弊端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-持久化"><span class="toc-number">4.1.</span> <span class="toc-text">1. 持久化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-分布式"><span class="toc-number">4.2.</span> <span class="toc-text">2.分布式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#我的实现"><span class="toc-number">5.</span> <span class="toc-text">我的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#之前使用的方案"><span class="toc-number">5.1.</span> <span class="toc-text">之前使用的方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后面的方案"><span class="toc-number">5.2.</span> <span class="toc-text">后面的方案</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -466,8 +412,8 @@ var _hmt = _hmt || [];
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "https://troublrman.github.io/2017/09/03/interview/", 
-    sourceId: "interview",
+    url: "https://troublrman.github.io/2019/04/27/redis过期key监听的替代策略/", 
+    sourceId: "redis过期key监听的替代策略",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };
@@ -476,7 +422,7 @@ var _hmt = _hmt || [];
   
 
   
-  <div id="SOHUCS" sid="interview"></div> 
+  <div id="SOHUCS" sid="redis过期key监听的替代策略"></div> 
 <script charset="utf-8" type="text/javascript" src="//changyan.sohu.com/upload/changyan.js"></script>
 <script type="text/javascript">
     window.changyan.api.config({
@@ -511,7 +457,7 @@ var _hmt = _hmt || [];
 <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
 <script>
 var gitment = new Gitment({
-  id: "https://troublrman.github.io/2017/09/03/interview/",
+  id: "https://troublrman.github.io/2019/04/27/redis过期key监听的替代策略/",
   owner: 'troublrMan',
   repo: 'troublrMan.github.io',
   oauth: {
