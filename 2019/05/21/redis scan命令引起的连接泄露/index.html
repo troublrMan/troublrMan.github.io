@@ -17,7 +17,7 @@
 <meta property="og:description" content="最近项目中遇到一个使用redis不规范导致的连接泄露，导致线上环境不定期的会出现服务不可用，经过大量的排查终于发现原来是redis连接泄露，而这个泄露点居然是redis使用scan命令导致。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://prv446rzb.bkt.clouddn.com/%E5%9B%BE%E7%89%87.png">
-<meta property="og:updated_time" content="2019-05-22T03:03:37.897Z">
+<meta property="og:updated_time" content="2019-07-05T03:17:05.649Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis scan命令引起的连接泄露">
 <meta name="twitter:description" content="最近项目中遇到一个使用redis不规范导致的连接泄露，导致线上环境不定期的会出现服务不可用，经过大量的排查终于发现原来是redis连接泄露，而这个泄露点居然是redis使用scan命令导致。">
@@ -203,7 +203,7 @@ var _hmt = _hmt || [];
 <hr>
 <a id="more"></a>
 <p>1.<strong>有问题的泄露点代码</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">(```)</span><br><span class="line">StringBuilder valueKey = new StringBuilder().append(&quot;LIVE_&quot;).append(roomId).append(userId).append(&quot;*&quot;);</span><br><span class="line">        Cursor&lt;Map.Entry&lt;Object, Object&gt;&gt; cursor = redisTemplate.opsForHash().scan(RedisKey.LIVE_MESSAGE_COUNT, ScanOptions.scanOptions().match(valueKey.toString()).build());</span><br><span class="line">        while (cursor.hasNext()) &#123;</span><br><span class="line">            Map.Entry&lt;Object, Object&gt; entry = cursor.next();</span><br><span class="line">            //发送云信消息</span><br><span class="line">            try &#123;</span><br><span class="line">                GiftNotifyVo giftNotifyVo = JSONObject.parseObject(entry.getValue().toString(), GiftNotifyVo.class);</span><br><span class="line">                String comboCountOld = (String) redisTemplate.opsForValue().get(entry.getKey().toString());</span><br><span class="line">                if (StringUtils.hasText(comboCountOld) &amp;&amp; !ObjectUtils.isEmpty(giftNotifyVo)) &#123;</span><br><span class="line">                    giftNotifyVo.setHitCount(Integer.valueOf(comboCountOld));</span><br><span class="line">                &#125;</span><br><span class="line">                Double count = redisTemplate.opsForZSet().score(RedisKey.LIVE_MESSAGE_COUNT_TEMP, entry.getKey().toString());</span><br><span class="line">                redisTemplate.opsForZSet().remove(RedisKey.LIVE_MESSAGE_COUNT_TEMP, entry.getKey().toString());</span><br><span class="line">                //删除这条记录</span><br><span class="line">                redisTemplate.opsForHash().delete(RedisKey.LIVE_MESSAGE_COUNT, entry.getKey());</span><br><span class="line">                if (count != null &amp;&amp; count.intValue() != 0) &#123;</span><br><span class="line">                    if (!ObjectUtils.isEmpty(giftNotifyVo)) &#123;</span><br><span class="line">                        neteasePayment.messageCount(giftNotifyVo);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                //如果不超过5秒秒也要删除 这个rediskey的记录</span><br><span class="line">                redisTemplate.delete(entry.getKey().toString());</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    cursor.close();</span><br><span class="line">                &#125; catch (IOException e1) &#123;</span><br><span class="line">                    log.error(&quot;error in cursor.close()&#123;&#125;&quot;, e);</span><br><span class="line">                &#125;</span><br><span class="line">                log.error(&quot;error in sendGiftMessageCount&#123;&#125;&quot;, e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">(```)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">(```)</span><br><span class="line">        Cursor&lt;Map.Entry&lt;Object, Object&gt;&gt; cursor = redisTemplate.opsForHash().scan(RedisKey.LIVE_MESSAGE_COUNT, ScanOptions.scanOptions().match(valueKey.toString()).build());</span><br><span class="line">        while (cursor.hasNext()) &#123;</span><br><span class="line">        //业务代码</span><br><span class="line">          </span><br><span class="line"> </span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    cursor.close();</span><br><span class="line">                &#125; catch (IOException e1) &#123;</span><br><span class="line">                    log.error(&quot;error in cursor.close()&#123;&#125;&quot;, e);</span><br><span class="line">                &#125;</span><br><span class="line">                log.error(&quot;error in sendGiftMessageCount&#123;&#125;&quot;, e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">(```)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>用redis scan命令扫描key 返回需要的key列表信息（SCAN命令返回的是一个游标，从0开始遍历，到0结束遍历）</strong></p>
 </blockquote>
@@ -365,6 +365,15 @@ var _hmt = _hmt || [];
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/06/25/加快Idea开发的插件/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          加快Idea开发的插件
+        
+      </div>
+    </a>
   
   
     <a href="/2019/04/27/redis过期key监听的替代策略/" id="article-nav-older" class="article-nav-link-wrap">
@@ -569,11 +578,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color3">面试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">面试</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
             
             <div class="clearfix"></div>
